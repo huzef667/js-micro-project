@@ -23,7 +23,8 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+  routes,
+  linkExactActiveClass: "active fw-bold"
 })
 
 export default router

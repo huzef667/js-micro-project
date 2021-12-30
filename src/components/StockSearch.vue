@@ -12,6 +12,7 @@
               v-model="state.searchQuery"
               @input="debounceSearch"
               placeholder="Search Stocks"
+              ref="searchQueryInput"
             />
           </div>
         </div>
@@ -20,10 +21,12 @@
           v-if="!state.typing && state.searchResults.length > 0"
           class="search-results"
         >
+        
           <a
             v-for="search in state.searchResults.slice(0, 8)"
             :key="search.fullSymbol"
-            :href="'/stock-info?ticker=' + search.exchange + ':' + search.fullSymbol"
+            @click="navigateToDetails({exchange: search.exchange, symbol: search.fullSymbol })"
+            
           >
             <img :src="search.logoURL" />
             {{ search.companyName }}
@@ -43,13 +46,18 @@
 </template>
 
 <script>
-import { reactive } from "vue"
+import { ref, reactive } from "vue"
 import axios from "axios"
+import { useRouter } from 'vue-router'
 
 export default {
   name: "StockSearch",
 
-  setup() {
+  setup(props, context) {
+
+    const router = useRouter()
+      const searchQueryInput = ref(null)
+
     const state = reactive({
       typing: null,
       debounce: null,
@@ -71,17 +79,34 @@ export default {
     const searchTicker = async (keyword) => {
       const data = {
         data: {
-          search: keyword,
-        },
+          search: keyword
+        }
       }
       const response = await axios.post("https://us-central1-stockalarm-8b019.cloudfunctions.net/search", data)
       return response.data.result.tickers
     }
 
+    const navigateToDetails = (query) => {
+      
+      router.push({
+        name: "Stock Info",
+        query: {
+          ticker: `${query.exchange}:${query.symbol}`
+        }
+      })
+  
+      state.searchQuery = null
+      state.searchResults = []
+      searchQueryInput.value.blur()
+      context.emit("clicked", { exchange: query.exchange, symbol: query.symbol })
+    }
+
     return {
+      state,
       debounceSearch,
       searchTicker,
-      state
+      navigateToDetails,
+      searchQueryInput
     }
 
   }
@@ -95,7 +120,7 @@ export default {
 .search {
   position: absolute;
   width: 100%;
-  top: 13%;
+  top: 1%;
   z-index: 30;
 }
 .search-results {
@@ -124,7 +149,7 @@ a {
   background: #292f3e;
   padding: 10px;
   text-decoration: none;
-  color: white;
+  color: white!important;
   font-weight: 500;
 }
 a:hover {
@@ -145,5 +170,10 @@ img {
     background-clip: padding-box;
     border: 1px solid #3b4253;
     color: white;
+}
+@media(min-width: 768px) {
+  .search {
+  top: 3%;
+}
 }
 </style>

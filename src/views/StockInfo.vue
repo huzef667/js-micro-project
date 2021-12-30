@@ -1,12 +1,13 @@
 <template>
-  <div>
-    <StockSearch />
+  <div class="wrapper">
+    <StockSearch @clicked="renderTradingView"/>
 
     <VueTradingView
       :options="{
         symbol: state.symbol
       }"
       v-if="state.ready"
+      :key="state.TradingViewState"
     />
 
   </div>
@@ -28,15 +29,22 @@ export default {
     const route = useRoute()
 
     const state = reactive({
+      TradingViewState: 0,
       symbol: "NASDAQ:AAPL",
       ready: false
     })
+    
+    const renderTradingView = ({ exchange, symbol }) => {
+      state.symbol = `${exchange}:${symbol}`
+      state.TradingViewState += 1
+    }
 
     state.symbol = route.query.ticker
     state.ready = true
 
     return {
-      state
+      state,
+      renderTradingView
     }
   },
 

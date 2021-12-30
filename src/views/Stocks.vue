@@ -9,7 +9,7 @@
     <div class='container'>
       <h1 class='text-center mb-5 mt-5 text-white display-3 fw-bold'>Top Gainers Today</h1>
       <div class='row'>
-        <div class='px-5 col-xl-4 mb-4' v-for='(stock, index) in state.data' :key='index'>
+        <div class='xl-px-5 col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-4' v-for='(stock, index) in state.data' :key='index'>
           <div class='card'>
             <div class='card-body'>
               <h2 class='card-title'>{{ stock.ticker }}</h2>
@@ -57,7 +57,7 @@ export default {
 
   },
     components: {
-    StockSearch,
+    StockSearch
   }
 }
 </script>
@@ -74,4 +74,11 @@ export default {
 .wrapper {
   padding-top: 40px;
 }
+@media(min-width:1200px) {
+
+  .xl-px-5 {
+    padding-right: 3rem!important;
+    padding-left: 3rem!important;
+}
+  }
 </style>

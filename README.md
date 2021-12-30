@@ -1,4 +1,15 @@
-# stonks
+# JavaScript Micro Project
+
+### Compiled Preview
+Open /dist folder and open index.html in your preferred browser.
+
+
+### Compilation and live testing
+
+## Requirements
+NodeJS 14.0+
+yarn 
+
 
 ## Project setup
 ```
